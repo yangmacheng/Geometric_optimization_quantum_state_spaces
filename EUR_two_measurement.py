@@ -4,7 +4,7 @@ Entropic Uncertainty Relations (EUR) Bounds Visualization
 此脚本用于计算并对比两个测量不同熵不确定性关系的下界（Bounds）。
 主要包含以下界限的计算：
 1. Maassen-Uffink (MU) Bound
-2. Review-Prevedel-Zyczkowski (RPZ) Bound 
+2. Rudnicki-Puchała-Życzkowski (RPZ) Bound 
 3. Coles-Piani (CP) Bound
 4. RPZ Majorization Bound 
 5. Optimal Bound 
@@ -88,7 +88,7 @@ def get_overlaps_sorted(basis_U, basis_V):
 
 def calc_bounds(basis_U, basis_V):
     """
-    计算基于最大重叠系数 c 的解析界限：MU, RPZ, CP。
+    计算基于最大、次大重叠系数 c、 c2 的解析界限：MU, RPZ, CP。
     
     Args:
         basis_U, basis_V: 两组基底矩阵。
@@ -106,7 +106,7 @@ def calc_bounds(basis_U, basis_V):
     q_mu = -np.log(c)
     
     # --- 2. RPZ Bound (Improved MU) ---
-    # 参考文献: Rudnicki et al., PRL 112, 050401 (2014)
+    # 参考文献: Rudnicki et al.,  PRA 89, 052115 (2014).
     b = (1.0 + np.sqrt(c)) / 2.0
     term_rpz = b**2 + (c2 / c) * (1.0 - b**2)
     
@@ -130,8 +130,8 @@ def calc_bounds(basis_U, basis_V):
 
 def RPZ_maj_bound(U_list, base=np.e):
     """
-    基于主优化的 RPZ 界限 (RPZ Majorization)。
-    通过计算矩阵列向量组合的奇异值来构造主优化向量。
+    基于 mjorization 技术的 RPZ 界限 (RPZ Majorization)。
+    通过计算矩阵列向量组合的奇异值来构造 majorization 向量。
     
     Args:
         U_list (list): 基底矩阵列表 [U1, U2, ...]
@@ -154,7 +154,7 @@ def RPZ_maj_bound(U_list, base=np.e):
     # 遍历所有可能的列数 k (从 1 到 N-1)
     # 注意：此步计算量随 d 和 L 组合数增长极快
     for k in range(1, N):
-        m = k + 1  # 这里的逻辑是计算 tensor product 空间中的主优化
+        m = k + 1 
         max_sigma2 = 0.0
         
         # 遍历所有可能的列组合
@@ -170,10 +170,10 @@ def RPZ_maj_bound(U_list, base=np.e):
     # k=N 时，取全部列
     S[N] = np.linalg.svd(M, compute_uv=False)[0]**2
 
-    # 3. 构造主优化向量 s
-    # s 向量的元素和为 1，且按主优化序排列
+    # 3. 构造  majorization 向量 s
+    # s 向量的元素和为 1
     s = np.zeros(N + 1)
-    s[0] = 1.0 # 这里沿用原代码逻辑，但在某些文献中 s[0] 定义可能不同，保持原样
+    s[0] = 1.0 
     s[1:] = S[1:] - S[:-1]
 
     # 4. 计算该向量的香农熵

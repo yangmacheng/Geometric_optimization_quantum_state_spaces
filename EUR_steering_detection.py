@@ -4,7 +4,7 @@ Quantum Steering Detection Based on Entropic Uncertainty Relations (EUR) Bounds 
 此脚本用于计算并对比两个测量不同 Tsallis 熵不确定性关系的下界（Bounds），并应用于量子导引。
 主要包含以下界限的计算：
 1. Maassen-Uffink (MU) Bound
-2. Review-Prevedel-Zyczkowski (RPZ) Bound 
+2. Rudnicki-Puchała-Życzkowski (RPZ) Bound 
 3. Coles-Piani (CP) Bound
 4. RPZ Majorization Bound 
 5. Optimal Bound 
@@ -88,7 +88,7 @@ def get_overlaps_sorted(basis_U, basis_V):
 
 def calc_bounds(basis_U, basis_V):
     """
-    计算基于最大重叠系数 c 的解析界限：MU, RPZ, CP。
+    计算基于最大、次大重叠系数 c、c2 的解析界限：MU, RPZ, CP。
     
     Args:
         basis_U, basis_V: 两组基底矩阵。
@@ -106,7 +106,7 @@ def calc_bounds(basis_U, basis_V):
     q_mu = -np.log(c)
     
     # --- 2. RPZ Bound (Improved MU) ---
-    # 参考文献: Rudnicki et al., PRL 112, 050401 (2014)
+    # 参考文献: Rudnicki et al.,  PRA 89, 052115 (2014).
     b = (1.0 + np.sqrt(c)) / 2.0
     term_rpz = b**2 + (c2 / c) * (1.0 - b**2)
     
@@ -132,7 +132,7 @@ def calc_bounds(basis_U, basis_V):
 def RPZ_maj_bound_tsallis(U_list, alpha, base=np.e):
     """
     计算 RPZ (Rudnicki-Puchala-Zyczkowski) majorization 界。
-    利用矩阵拼接和奇异值分解构建优越化向量 s，然后计算其 Tsallis 熵。
+    利用矩阵拼接和奇异值分解构建 majorization 向量 s，然后计算其 Tsallis 熵。
     
     参数:
         U_list: 幺正矩阵列表
@@ -248,7 +248,6 @@ def get_O3():
 def set_pub_style():
     """
     配置 Matplotlib 以生成出版级质量的图表。
-    尝试使用 LaTeX 字体，如果不可用则回退到标准衬线字体。
     """
     try:
         from matplotlib import rc
@@ -376,7 +375,7 @@ if __name__ == "__main__":
     
     plt.figure(figsize=(7, 5))
 
-    # 定义颜色方案 (Colorblind-friendly palette recommended)
+    # 定义颜色
     color_mu = '#1f77b4'       # Blue
     color_cp = '#2ca02c'       # Green
     color_rpz = '#ff7f0e'      # Orange
@@ -873,5 +872,3 @@ if __name__ == "__main__":
 #     plt.show()
 
 
-
-# %%
